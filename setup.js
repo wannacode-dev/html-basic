@@ -45,6 +45,7 @@ function execCommand(command, errorMessage) {
 async function setup() {
     print.header('WannaCode Course Setup');
 
+    // Проверка зависимостей
     print.step('Проверка необходимых зависимостей...');
     const requiredCommands = ['git', 'node', 'npm'];
     for (const cmd of requiredCommands) {
@@ -56,41 +57,49 @@ async function setup() {
     }
     print.success('Все необходимые зависимости установлены');
 
+    // Вывод версий
     print.header('Версии установленных компонентов');
     console.log(`Node.js: ${process.version}`);
     console.log(`npm: ${execSync('npm --version').toString().trim()}`);
     console.log(`Git: ${execSync('git --version').toString().trim()}\n`);
 
-    print.step('Проверка состояния local-ui...');
-    const localUiPath = path.join(process.cwd(), 'local-ui');
-    if (fs.existsSync(localUiPath)) {
-        print.warning('Найдена существующая папка local-ui');
-        print.step('Очистка local-ui...');
-        fs.rmSync(localUiPath, { recursive: true, force: true });
-        print.success('Папка local-ui очищена');
-    }
-
-    print.step('Инициализация и обновление сабмодуля local-ui...');
-    if (!execCommand('git submodule add https://github.com/wannacode-dev/local-ui 2>nul || git submodule update --init --recursive',
-        'Ошибка при инициализации сабмодуля')) {
+    // Установка сабмодуля
+    print.step('Установка local-ui...');
+    if (!execCommand('git submodule update --init --recursive', 'Ошибка при установке local-ui')) {
         process.exit(1);
     }
-    print.success('Сабмодуль успешно инициализирован');
+    print.success('local-ui успешно установлен');
 
+    // Установка зависимостей local-ui
     print.step('Установка зависимостей local-ui...');
-    process.chdir('local-ui');
+    try {
+        process.chdir('local-ui');
+    } catch (error) {
+        print.error(`Не удалось перейти в директорию local-ui: ${error.message}`);
+        process.exit(1);
+    }
+
     if (!execCommand('npm install', 'Ошибка при установке зависимостей local-ui')) {
         process.exit(1);
     }
     print.success('Зависимости local-ui успешно установлены');
 
+    // Сборка local-ui
     print.step('Сборка local-ui...');
     if (!execCommand('npm run build', 'Ошибка при сборке local-ui')) {
         process.exit(1);
     }
     print.success('local-ui успешно собран');
-    process.chdir('..');
+    
+    // Возврат в корневую директорию
+    try {
+        process.chdir('..');
+    } catch (error) {
+        print.error(`Не удалось вернуться в корневую директорию: ${error.message}`);
+        process.exit(1);
+    }
 
+    // Установка корневых зависимостей
     print.step('Установка корневых зависимостей проекта...');
     if (!execCommand('npm install', 'Ошибка при установке корневых зависимостей')) {
         process.exit(1);
