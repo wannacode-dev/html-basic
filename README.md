@@ -67,7 +67,7 @@ npm run setup
 
 Затем запустите проект:
 ```bash
-npm run dev
+npm start
 ```
 
 ## Обновление сабмодуля

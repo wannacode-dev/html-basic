@@ -99,7 +99,7 @@ async function setup() {
 
     print.header('Установка успешно завершена!');
     console.log('\nДля запуска проекта выполните:');
-    console.log(`${colors.blue}npm run dev${colors.reset}\n`);
+    console.log(`${colors.blue}npm start${colors.reset}\n`);
 }
 
 setup().catch(error => {
