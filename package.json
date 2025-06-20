@@ -1,0 +1,12 @@
+{
+  "name": "wannacode-course-template",
+  "version": "1.0.0",
+  "description": "Template для создания курсов WannaCode",
+  "scripts": {
+    "setup": "node setup.js",
+    "start": "cd local-ui && npm start",
+    "update-ui": "git submodule update --remote --merge && cd local-ui && npm install && cd .. && git add local-ui && git commit -m \"Update local-ui submodule\""
+  },
+  "author": "WannaCode",
+  "license": "ISC"
+} 

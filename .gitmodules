@@ -1,0 +1,3 @@
+[submodule "local-ui"]
+	path = local-ui
+	url = https://github.com/wannacode-dev/local-ui
